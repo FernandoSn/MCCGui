@@ -1,6 +1,0 @@
-window=2,
-rate=2000,
-range=10,
-channels=1,
-chanresp=0,
-board=USB-1608G(1F206AF),

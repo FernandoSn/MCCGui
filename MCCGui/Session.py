@@ -3,6 +3,7 @@ import time
 import array
 import threading
 import numpy
+import os
 
 def DataThread(Session):
 
@@ -22,10 +23,9 @@ def DataThread(Session):
     ini = curr_index
 
     if Session.isRecording:
-        Session.Date = Session.GetDateStr()
-        RawDataFile = open(Session.FileName + Session.Date + ".dat", 'w+b')
+        RawDataFile = open(Session.Dir + Session.FileName + Session.Date + ".dat", 'w+b')
         if Session.RespON:
-            RespFile = open(Session.FileName + Session.Date + ".resp", 'w+b')
+            RespFile = open(Session.Dir + Session.FileName + Session.Date + ".resp", 'w+b')
         Session.SaveSessionSettings()
 
     Session.DisplaySettings()
@@ -93,6 +93,7 @@ class Session():
     isRecording = False
     FileName = ""
     Date = ""
+    Dir = ""
 
     RespON = False
     RespCh = 0
@@ -129,20 +130,23 @@ class Session():
         self.isAcquiring = False
         self.t1.join()
 
-    def GetDateStr(self):
+    def setDate(self):
 
-        Date = "_" + str(time.localtime().tm_mon) + "_" \
+        self.Date = "_" + str(time.localtime().tm_mon) + "_" \
                + str(time.localtime().tm_mday) + "_" \
                + str(time.localtime().tm_year) + "_" \
                + str(time.localtime().tm_hour) + "_" \
                + str(time.localtime().tm_min) + "_" \
                + str(time.localtime().tm_sec)
 
-        return Date
+    def setDir(self):
+
+        self.Dir = os.getcwd() + "\data" + "\\" + self.FileName + self.Date + "\\"
+        os.makedirs(os.path.dirname(self.Dir), exist_ok=True)
 
     def SaveSessionSettings(self):
 
-        SessionSettingsFile = open("SessionSettings_" +  self.FileName +self.Date + ".txt", 'w')
+        SessionSettingsFile = open(self.Dir + "SessionSettings_" +  self.FileName +self.Date + ".txt", 'w')
 
         SessionSettingsFile.write("filename=" + self.FileName + ",\n")
         SessionSettingsFile.write("rate=" + str(self.SRate) + ",\n")
@@ -164,6 +168,7 @@ class Session():
         if self.isRecording:
             print("Recording=True")
             print("filename=" + self.FileName + self.Date)
+            print("path: " + self.Dir)
         else:
             print("Recording=False")
 

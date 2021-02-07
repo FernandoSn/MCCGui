@@ -192,6 +192,8 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             self.Recording = True
             self.Session.isRecording = self.Recording
             self.Session.FileName = self.filename_le.text()
+            self.Session.setDate()
+            self.Session.setDir()
 
             self.play_pb.setDisabled(True)
             self.filename_le.setDisabled(True)
